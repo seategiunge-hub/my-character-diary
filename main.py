@@ -36,7 +36,7 @@ if not st.session_state.char_created:
     
     # 髪型20種類
     hair_styles = [
-        "ショートボブ", "ロングストレート", "ツインテール", "ポニーテール", "ツープロック",
+        "ショートボブ", "ロングストレート", "ツインテール", "ポニーテール", "ツーブロック",
         "ウルフカット", "マッシュ", "ベリーショート", "ミディアムウェーブ", "ハーフアップ",
         "お団子ヘア", "三つ編み", "姫カット", "アシンメトリー", "パーマスタイル",
         "センター分け", "ボブカット", "サイドポニー", "ギブソンタック", "リーゼント風ショート"
@@ -64,7 +64,7 @@ if not st.session_state.char_created:
                 # アニメ風キャラクターの画像生成プロンプト
                 image_prompt = f"Cute anime style character icon, {gender}, {hair_color} {hair}, {eyes} eyes, wearing {clothes}, high quality, standard professional anime illustration, solo, looking at viewer, detailed."
                 
-                # Imagenモデルを使って画像生成
+                # 【エラー対策】最新のImagen 3モデルを指定
                 img_model = genai.GenerativeModel("imagen-3.0-generate-002")
                 result = img_model.generate_images(
                     prompt=image_prompt,
@@ -80,7 +80,8 @@ if not st.session_state.char_created:
                 st.rerun()
                 
             except Exception as e:
-                st.error(f"画像生成中にエラーが発生しました（キャラクター作成は続行します）: {e}")
+                # 画像生成でエラーが起きてもアプリ自体が止まらないように対策
+                st.error(f"画像生成でエラーが発生したため、イラストなしで開始します: {e}")
                 st.session_state.char_created = True
                 st.rerun()
 
@@ -140,8 +141,8 @@ else:
                     {diary_text}
                     """
                     
-                    # テキスト生成モデルを呼び出し
-                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    # 【エラー対策】正式にサポートされている「models/gemini-1.5-flash」をフルパスで指定
+                    model = genai.GenerativeModel('models/gemini-1.5-flash')
                     response = model.generate_content(prompt)
                     
                     # 返答を表示
@@ -152,4 +153,4 @@ else:
                         st.error("AIからの返答をうまく受信できませんでした。もう一度送信してください。")
                         
                 except Exception as e:
-                    st.error(f"エラーが発生しました。日記の文章を少し変えるか、もう一度お試しください。エラー詳細: {e}")
+                    st.error(f"エラーが発生しました。エラー詳細: {e}")
