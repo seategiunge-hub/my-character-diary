@@ -1,0 +1,2 @@
+# my-character-diary
+daily
